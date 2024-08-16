@@ -1,22 +1,29 @@
 package model;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
 
 @Entity
+@Table(name = "Empleado")
 public class Empleado implements Serializable {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id   
+
     private int id;
+    
     @Basic
     private String nombre;
+    @Basic
     private String puesto;
+    @Basic
     private double salario;
+    @Basic
     private String zona;
 
     public Empleado() {
@@ -30,6 +37,7 @@ public class Empleado implements Serializable {
         this.zona = zona;
     }
 
+    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -74,5 +82,4 @@ public class Empleado implements Serializable {
     public String toString() {
         return "Empleado{" + "id=" + id + ", nombre=" + nombre + ", puesto=" + puesto + ", salario=" + salario + ", zona=" + zona + '}';
     }
-    
 }
