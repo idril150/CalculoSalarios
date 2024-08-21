@@ -27,10 +27,12 @@ public class ChecadorJpaController {
     EntityManager em = null;
         try {
             em = getEntityManager();
-            String sql = "SELECT e.ID, e.Name, e.LastName, b.Name AS branchName, s2.Name AS sorter2Name " +
-                          "FROM employee e " +
-                          "LEFT JOIN branch b ON e.IDBranch = b.ID " +
-                          "LEFT JOIN sorter s2 ON e.IDSorter2 = s2.ID";
+            String sql = "SELECT e.ID, e.Name, e.LastName, b.Name AS branchName, " +
+             "s2.Name AS sorter2Name, s1.Name AS sorter1Name " +
+             "FROM employee e " +
+             "LEFT JOIN branch b ON e.IDBranch = b.ID " +
+             "LEFT JOIN sorter s2 ON e.IDSorter2 = s2.ID " +
+             "LEFT JOIN sorter s1 ON e.IDSorter1 = s1.ID";
             Query query = em.createNativeQuery(sql);
             return query.getResultList();
         } catch (Exception e) {

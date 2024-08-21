@@ -25,16 +25,19 @@ public class Empleado implements Serializable {
     private double salario;
     @Basic
     private String zona;
+    @Basic
+    private String horario;
 
     public Empleado() {
     }
 
-    public Empleado(int id, String nombre, String puesto, double salario, String zona) {
+    public Empleado(int id, String nombre, String puesto, double salario, String zona, String horario) {
         this.id = id;
         this.nombre = nombre;
         this.puesto = puesto;
         this.salario = salario;
         this.zona = zona;
+        this.horario = horario;
     }
 
     // Getters y Setters
@@ -78,8 +81,17 @@ public class Empleado implements Serializable {
         this.zona = zona;
     }
 
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
+
     @Override
     public String toString() {
-        return "Empleado{" + "id=" + id + ", nombre=" + nombre + ", puesto=" + puesto + ", salario=" + salario + ", zona=" + zona + '}';
+        return "Empleado{" + "id=" + id + ", nombre=" + nombre + ", puesto=" + puesto + ", salario=" + salario + ", zona=" + zona + ", horario=" + horario + '}';
     }
+        
 }

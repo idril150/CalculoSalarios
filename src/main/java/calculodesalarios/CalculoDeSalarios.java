@@ -7,9 +7,11 @@ package calculodesalarios;
 import controller.ChecadorJpaController;
 import controller.EmpleadoJpaController;
 import controller.PagoJpaController;
+import controller.VistasController;
 import java.util.List;
 import model.Empleado;
 import model.Pago;
+import vista.Inicio;
 
 /**
  *
@@ -22,6 +24,10 @@ public class CalculoDeSalarios {
         ChecadorJpaController cctrl = new ChecadorJpaController();
         EmpleadoJpaController ectrl = new EmpleadoJpaController();
         PagoJpaController pctrl = new PagoJpaController();
+        
+        VistasController vistas = new VistasController();
+        
+        vistas.iniciar();
         
         //creacion de empleado
         /*
