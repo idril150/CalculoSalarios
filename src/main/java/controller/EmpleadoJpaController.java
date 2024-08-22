@@ -64,6 +64,7 @@ public class EmpleadoJpaController implements Serializable {
             empEdit.setSalario(empleado.getSalario());
             empEdit.setZona(empleado.getZona());
             empEdit.setHorario(empleado.getHorario());
+            empEdit.setBonop(empleado.getBonop());
             em.getTransaction().commit();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error al editar el empleado: ", e);
@@ -129,6 +130,9 @@ public class EmpleadoJpaController implements Serializable {
         }catch(Exception ex){
             throw ex;
         }finally{
+            if(em!=null){
+                em.close();
+            }
         }
         
     }

@@ -32,6 +32,7 @@ public class VistasController {
         view.jTZona.setText(empleado.getZona());
         view.jTSalario.setText(String.valueOf(empleado.getSalario()));
         view.jTHorario.setText(empleado.getHorario());
+        view.jTBono.setText(String.valueOf(empleado.getBonop()));
         view.setVisible(true);
         view.setLocationRelativeTo(view);
     }

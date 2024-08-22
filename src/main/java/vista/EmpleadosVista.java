@@ -22,10 +22,10 @@ public class EmpleadosVista extends JFrame {
     public EmpleadosVista(List<Empleado> empleados) {
         // Configuración básica del JFrame
         setTitle("Lista de Empleados");
-        setSize(800, 400);
+        setSize(900, 400);
 
         // Crear el modelo de la tabla
-        String[] columnas = {"ID", "Nombre", "Salario", "Puesto", "Zona", "Horario","Acción"};
+        String[] columnas = {"ID", "Nombre", "Salario", "Puesto", "Zona", "Horario","Bono","Acción"};
         DefaultTableModel model = new DefaultTableModel(columnas, 0);
 
         // Llenar el modelo con los datos de los empleados
@@ -37,10 +37,14 @@ public class EmpleadosVista extends JFrame {
                 empleado.getPuesto(),
                 empleado.getZona(),
                 empleado.getHorario(),
+                empleado.getBonop(),
                 "EDITAR"  // Texto del botón
             };
             model.addRow(fila);
         }
+        
+        
+
 
         // Crear la tabla y agregar el modelo
         empleadoTable = new JTable(model);
@@ -50,11 +54,16 @@ public class EmpleadosVista extends JFrame {
         empleadoTable.getColumnModel().getColumn(3).setPreferredWidth(100);
         empleadoTable.getColumnModel().getColumn(4).setPreferredWidth(100);
         empleadoTable.getColumnModel().getColumn(5).setPreferredWidth(200);
-        empleadoTable.getColumnModel().getColumn(6).setPreferredWidth(90);
+        empleadoTable.getColumnModel().getColumn(6).setPreferredWidth(100);
+        empleadoTable.getColumnModel().getColumn(7).setPreferredWidth(90);
+        empleadoTable.setRowHeight(20);
+
+        
 
         // Configurar el renderizador y el editor para la columna de botones
         empleadoTable.getColumn("Acción").setCellRenderer(new ButtonRenderer());
         empleadoTable.getColumn("Acción").setCellEditor(new ButtonEditor(new JCheckBox(), empleados, this));
+
 
         JScrollPane scrollPane = new JScrollPane(empleadoTable);
         add(scrollPane);
@@ -66,6 +75,7 @@ public class EmpleadosVista extends JFrame {
                 dispose();  // Cerrar la vista de empleados
             }
         });
+        
 
 
         // Mostrar la ventana
@@ -85,6 +95,7 @@ public class EmpleadosVista extends JFrame {
                 empleado.getPuesto(),
                 empleado.getZona(),
                 empleado.getHorario(),
+                empleado.getBonop(),
                 "EDITAR"  // Texto del botón
             };
             model.addRow(fila);

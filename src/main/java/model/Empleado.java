@@ -14,30 +14,27 @@ import java.io.Serializable;
 public class Empleado implements Serializable {
     
     @Id   
-
     private int id;
     
     @Basic
     private String nombre;
-    @Basic
     private String puesto;
-    @Basic
     private double salario;
-    @Basic
     private String zona;
-    @Basic
     private String horario;
+    private double bonop;
 
     public Empleado() {
     }
 
-    public Empleado(int id, String nombre, String puesto, double salario, String zona, String horario) {
+    public Empleado(int id, String nombre, String puesto, double salario, String zona, String horario, double bonop) {
         this.id = id;
         this.nombre = nombre;
         this.puesto = puesto;
         this.salario = salario;
         this.zona = zona;
         this.horario = horario;
+        this.bonop = bonop;
     }
 
     // Getters y Setters
@@ -89,9 +86,17 @@ public class Empleado implements Serializable {
         this.horario = horario;
     }
 
+    public double getBonop() {
+        return bonop;
+    }
+
+    public void setBonop(double bonop) {
+        this.bonop = bonop;
+    }
+
     @Override
     public String toString() {
-        return "Empleado{" + "id=" + id + ", nombre=" + nombre + ", puesto=" + puesto + ", salario=" + salario + ", zona=" + zona + ", horario=" + horario + '}';
+        return "Empleado{" + "id=" + id + ", nombre=" + nombre + ", puesto=" + puesto + ", salario=" + salario + ", zona=" + zona + ", horario=" + horario + ", bonop=" + bonop + '}';
     }
         
 }

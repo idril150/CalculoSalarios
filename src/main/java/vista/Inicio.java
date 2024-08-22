@@ -128,7 +128,7 @@ public class Inicio extends javax.swing.JFrame {
             }
 
             // Crear el nuevo empleado
-            Empleado empleado = new Empleado(id, name+" "+lastName, sorter2Name, 0, branchName, horario);
+            Empleado empleado = new Empleado(id, name+" "+lastName, sorter2Name, 0, branchName, horario, 0);
             
             try {
                 ectrl.create(empleado);

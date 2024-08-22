@@ -4,11 +4,15 @@
 
 package calculodesalarios;
 
+import controller.CalculoController;
 import controller.ChecadorJpaController;
 import controller.EmpleadoJpaController;
 import controller.PagoJpaController;
 import controller.VistasController;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import model.Empleado;
 import model.Pago;
 import vista.Inicio;
@@ -24,10 +28,24 @@ public class CalculoDeSalarios {
         ChecadorJpaController cctrl = new ChecadorJpaController();
         EmpleadoJpaController ectrl = new EmpleadoJpaController();
         PagoJpaController pctrl = new PagoJpaController();
+        CalculoController cactrl = new CalculoController();
         
-        VistasController vistas = new VistasController();
+        //cactrl.calculasSalario(ectrl.findEmpleado(4));
+        /*VistasController vistas = new VistasController();
+        vistas.iniciar();*/
         
-        vistas.iniciar();
+
+            //cactrl.calculasSalario(ectrl.findEmpleados());
+
+        
+        /*for(Empleado empleado : ectrl.findEmpleados()){
+            System.out.println(empleado.getId()+" "+empleado.getNombre());
+            System.out.println(cctrl.obtenerDiasTrabajados(empleado.getId(), 20240601, 20240615));
+            System.out.println("\n\n");
+        }*/
+        
+        
+        
         
         //creacion de empleado
         /*

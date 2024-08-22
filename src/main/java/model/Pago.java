@@ -10,7 +10,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "Pago")
 public class Pago implements Serializable {
@@ -20,26 +19,30 @@ public class Pago implements Serializable {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "empleado_id", nullable = false)  // Indica la clave foránea que conecta a Empleado
-    private Empleado empleado;  // Cambia idemp por la relación ManyToOne
+    @JoinColumn(name = "empleado_id", nullable = false)  // Clave foránea que conecta a Empleado
+    private Empleado empleado;
 
     @Basic
-    private double bonp;
+    private int diast;
+    private int diasd;
     private double bong;
     private double ret;
-    private double sal;
+    private int mediosd;
+    private double modValue; // Cambiado de 'mod' a 'modValue'
     private double pagtot;
     private int fech;
 
     public Pago() {
     }
 
-    public Pago(Empleado empleado, double bonp, double bong, double ret, double sal, double pagtot, int fech) {
+    public Pago(Empleado empleado, int diast, int diasd, double bong, double ret, int mediosd, double modValue, double pagtot, int fech) {
         this.empleado = empleado;
-        this.bonp = bonp;
+        this.diast = diast;
+        this.diasd = diasd;
         this.bong = bong;
         this.ret = ret;
-        this.sal = sal;
+        this.mediosd = mediosd;
+        this.modValue = modValue;
         this.pagtot = pagtot;
         this.fech = fech;
     }
@@ -61,14 +64,6 @@ public class Pago implements Serializable {
         this.empleado = empleado;
     }
 
-    public double getBonp() {
-        return bonp;
-    }
-
-    public void setBonp(double bonp) {
-        this.bonp = bonp;
-    }
-
     public double getBong() {
         return bong;
     }
@@ -83,14 +78,6 @@ public class Pago implements Serializable {
 
     public void setRet(double ret) {
         this.ret = ret;
-    }
-
-    public double getSal() {
-        return sal;
-    }
-
-    public void setSal(double sal) {
-        this.sal = sal;
     }
 
     public double getPagtot() {
@@ -109,8 +96,40 @@ public class Pago implements Serializable {
         this.fech = fech;
     }
 
+    public int getDiast() {
+        return diast;
+    }
+
+    public void setDiast(int diast) {
+        this.diast = diast;
+    }
+
+    public int getDiasd() {
+        return diasd;
+    }
+
+    public void setDiasd(int diasd) {
+        this.diasd = diasd;
+    }
+
+    public int getMediosd() {
+        return mediosd;
+    }
+
+    public void setMediosd(int mediosd) {
+        this.mediosd = mediosd;
+    }
+
+    public double getModValue() {
+        return modValue;
+    }
+
+    public void setModValue(double modValue) {
+        this.modValue = modValue;
+    }
+
     @Override
     public String toString() {
-        return "Pago{" + "id=" + id + ", empleado=" + empleado + ", bonp=" + bonp + ", bong=" + bong + ", ret=" + ret + ", sal=" + sal + ", pagtot=" + pagtot + ", fech=" + fech + '}';
+        return "Pago{" + "id=" + id + ", empleado=" + empleado + ", diast=" + diast + ", diasd=" + diasd + ", bong=" + bong + ", ret=" + ret + ", mediosd=" + mediosd + ", modValue=" + modValue + ", pagtot=" + pagtot + ", fech=" + fech + '}';
     }
 }
