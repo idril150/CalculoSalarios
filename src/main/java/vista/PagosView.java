@@ -20,14 +20,14 @@ public class PagosView extends JFrame {
         this.pagoJpaController = pagoJpaController; // Inicializar el controlador de pagos
 
         setTitle("Pagos");
-        setSize(800, 400);
+        setSize(1000, 400); // Aumenta el tamaño para acomodar más columnas
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Crear el modelo de tabla
         AbstractTableModel tableModel = new AbstractTableModel() {
             private final String[] columnNames = {
-                "Nombre", "Salario", "Bonop", "Días Trabajados", "Días de Descanso", "Medios Días", "Bonificación",
+                "Nombre", "Salario", "Zona", "Horario", "Bonop", "Días Trabajados", "Días de Descanso", "Medios Días", "Bonificación",
                 "Retenciones", "Pago Total", "Fecha de Pago", "Actualizar"
             };
 
@@ -47,36 +47,38 @@ public class PagosView extends JFrame {
                 switch (columnIndex) {
                     case 0: return pago.getEmpleado().getNombre();
                     case 1: return pago.getEmpleado().getSalario();
-                    case 2: return pago.getEmpleado().getBonop();
-                    case 3: return pago.getDiast();
-                    case 4: return pago.getDiasd();
-                    case 5: return pago.getMediosd();
-                    case 6: return pago.getBong();
-                    case 7: return pago.getRet();
-                    case 8: return pago.getPagtot();
-                    case 9: return pago.getFech();
-                    case 10: return "Actualizar";
+                    case 2: return pago.getEmpleado().getZona();
+                    case 3: return pago.getEmpleado().getHorario();
+                    case 4: return pago.getBonp();
+                    case 5: return pago.getDiast();
+                    case 6: return pago.getDiasd();
+                    case 7: return pago.getMediosd();
+                    case 8: return pago.getBong();
+                    case 9: return pago.getRet();
+                    case 10: return pago.getPagtot();
+                    case 11: return pago.getFech();
+                    case 12: return "Actualizar";
                     default: return null;
                 }
             }
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                // Hacer que solo las columnas 2 a 9 sean editables
-                return columnIndex > 1 && columnIndex < 10;
+                // Hacer que solo las columnas 4 a 11 sean editables (no editables las de Empleado ni Pago Total)
+                return columnIndex >= 4 && columnIndex <= 9;
             }
 
             @Override
             public void setValueAt(Object value, int rowIndex, int columnIndex) {
                 Pago pago = pagos.get(rowIndex);
                 switch (columnIndex) {
-                    case 2: pago.getEmpleado().setBonop((Double) value); break;
-                    case 3: pago.setDiast((Integer) value); break;
-                    case 4: pago.setDiasd((Integer) value); break;
-                    case 5: pago.setMediosd((Integer) value); break;
-                    case 6: pago.setBong((Double) value); break;
-                    case 7: pago.setRet((Double) value); break;
-                    case 9: pago.setFech((Integer) value); break;
+                    case 4: pago.setBonp((Double) value); break;
+                    case 5: pago.setDiast((Integer) value); break;
+                    case 6: pago.setDiasd((Integer) value); break;
+                    case 7: pago.setMediosd((Integer) value); break;
+                    case 8: pago.setBong((Double) value); break;
+                    case 9: pago.setRet((Double) value); break;
+                    case 11: pago.setFech((Integer) value); break;
                 }
                 
                 // Recalcular el pago total
@@ -84,7 +86,7 @@ public class PagosView extends JFrame {
                 
                 // Notificar a la tabla que el valor ha cambiado
                 fireTableCellUpdated(rowIndex, columnIndex);
-                fireTableCellUpdated(rowIndex, 8); // Actualizar la columna de Pago Total
+                fireTableCellUpdated(rowIndex, 10); // Actualizar la columna de Pago Total
             }
 
             @Override
@@ -94,11 +96,11 @@ public class PagosView extends JFrame {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 10) {
+                if (columnIndex == 12) {
                     return JButton.class;
-                } else if (columnIndex == 0 || columnIndex == 1) {
-                    return String.class; // nombre y salario
-                } else if (columnIndex == 2 || columnIndex == 6 || columnIndex == 7 || columnIndex == 8) {
+                } else if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
+                    return String.class; // nombre, salario, zona, horario
+                } else if (columnIndex == 4 || columnIndex == 8 || columnIndex == 9 || columnIndex == 10) {
                     return Double.class; // bonop, bonificación, retenciones, pago total
                 } else {
                     return Integer.class; // días trabajados, días de descanso, medios días, fecha de pago
@@ -111,7 +113,7 @@ public class PagosView extends JFrame {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component comp = super.prepareRenderer(renderer, row, column);
-                if (column == 10) {
+                if (column == 12) {
                     JButton button = new JButton("Actualizar");
                     button.addActionListener(new ActionListener() {
                         @Override
@@ -155,7 +157,7 @@ public class PagosView extends JFrame {
         double salarioDiario = pago.getEmpleado().getSalario() / 30;
         return (salarioDiario * pago.getDiast()) + (salarioDiario * pago.getDiasd())
              - ((salarioDiario / 2) * pago.getMediosd())
-             + pago.getEmpleado().getBonop()
+             + pago.getBonp()
              + pago.getBong()
              - pago.getRet();
     }

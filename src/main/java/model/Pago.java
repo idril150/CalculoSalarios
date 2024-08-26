@@ -26,6 +26,7 @@ public class Pago implements Serializable {
     private int diast;
     private int diasd;
     private double bong;
+    private double bonp;
     private double ret;
     private int mediosd;
     private double modValue; // Cambiado de 'mod' a 'modValue'
@@ -35,17 +36,20 @@ public class Pago implements Serializable {
     public Pago() {
     }
 
-    public Pago(Empleado empleado, int diast, int diasd, double bong, double ret, int mediosd, double modValue, double pagtot, int fech) {
+    public Pago(Empleado empleado, int diast, int diasd, double bong, double bonp, double ret, int mediosd, double modValue, double pagtot, int fech) {
         this.empleado = empleado;
         this.diast = diast;
         this.diasd = diasd;
         this.bong = bong;
+        this.bonp = bonp;
         this.ret = ret;
         this.mediosd = mediosd;
         this.modValue = modValue;
         this.pagtot = pagtot;
         this.fech = fech;
     }
+
+    
 
     // Getters y Setters
     public int getId() {
@@ -128,8 +132,17 @@ public class Pago implements Serializable {
         this.modValue = modValue;
     }
 
+    public double getBonp() {
+        return bonp;
+    }
+
+    public void setBonp(double bonp) {
+        this.bonp = bonp;
+    }
+
     @Override
     public String toString() {
-        return "Pago{" + "id=" + id + ", empleado=" + empleado + ", diast=" + diast + ", diasd=" + diasd + ", bong=" + bong + ", ret=" + ret + ", mediosd=" + mediosd + ", modValue=" + modValue + ", pagtot=" + pagtot + ", fech=" + fech + '}';
+        return "Pago{" + "id=" + id + ", empleado=" + empleado + ", diast=" + diast + ", diasd=" + diasd + ", bong=" + bong + ", bonp=" + bonp + ", ret=" + ret + ", mediosd=" + mediosd + ", modValue=" + modValue + ", pagtot=" + pagtot + ", fech=" + fech + '}';
     }
+
 }

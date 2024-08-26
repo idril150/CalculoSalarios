@@ -15,7 +15,7 @@ import model.Empleado;
  * @author Soporte
  */
 public class Inicio extends javax.swing.JFrame {
-
+VistasController view = new VistasController();
     /**
      * Creates new form Inicio
      */
@@ -58,6 +58,11 @@ public class Inicio extends javax.swing.JFrame {
         });
 
         jButton4.setText("CALCULAR PAGOS");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("EXPORTAR PAGOS");
 
@@ -143,10 +148,14 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        VistasController view = new VistasController();
         view.vistaEmpleados();
         dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        view.vistaCalendario();
+        dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
