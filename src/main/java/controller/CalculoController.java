@@ -399,6 +399,4 @@ public class CalculoController {
         }
         vctrl.vistaPagos(pagos);
     }
-
-    
 }

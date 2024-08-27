@@ -67,29 +67,29 @@ public class CalendarioView extends JFrame {
                 String fechaFinStr = dateFormat.format(fechaFin);
                 int fechaInicioInt = Integer.parseInt(fechaInicioStr);
                 int fechaFinInt = Integer.parseInt(fechaFinStr);
-
                 if (fechaInicio != null && fechaFin != null) {
-                    // Mostrar las fechas en la consola
-                    System.out.println("Fecha de Inicio: " + dateFormat.format(fechaInicio));
-                    System.out.println("Fecha de Fin: " + dateFormat.format(fechaFin));
-                    CalculoController calctrl = new CalculoController();
-                    EmpleadoJpaController empctrl = new EmpleadoJpaController();
-                    VistasController vctrl = new VistasController();
-                    System.out.println(empctrl.findEmpleados());
-                    var pagos = calctrl.calculasSalario(empctrl.findEmpleados(), fechaInicioInt, fechaFinInt);
-                    vctrl.vistaBonos(pagos);
-                    dispose();
-                } else {
+                        if (fechaInicioInt < fechaFinInt){
+                            System.out.println("Fecha de Inicio: " + dateFormat.format(fechaInicio));
+                            System.out.println("Fecha de Fin: " + dateFormat.format(fechaFin));
+                            CalculoController calctrl = new CalculoController();
+                            EmpleadoJpaController empctrl = new EmpleadoJpaController();
+                            VistasController vctrl = new VistasController();
+                            System.out.println(empctrl.findEmpleados());
+                            var pagos = calctrl.calculasSalario(empctrl.findEmpleados(), fechaInicioInt, fechaFinInt);
+                            vctrl.vistaBonos(pagos);
+                            dispose();                          
+                        }else{
+                            JOptionPane.showMessageDialog(null, "la fecha de inicio no puede ser posterior a la fecha final");
+                        }   
+                }else {
                     System.out.println("Por favor, seleccione ambas fechas.");
                 }
             }
         });
-
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(aceptarButton, gbc);
     }
-
 }
