@@ -1,5 +1,6 @@
 package vista;
 
+import controller.ExportarController;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
@@ -65,26 +66,30 @@ public class PagosView extends JFrame {
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return columnIndex >= 5 && columnIndex <= 10;
+                return columnIndex >= 5 && columnIndex <= 11;
             }
 
             @Override
             public void setValueAt(Object value, int rowIndex, int columnIndex) {
                 Pago pago = pagos.get(rowIndex);
-                switch (columnIndex) {
-                    case 5: pago.setDiast((Integer) value); break;
-                    case 6: pago.setDiasd((Integer) value); break;                    
-                    case 7: pago.setMediosd((Integer) value); break;
-                    case 8: pago.setBonp((Double) value); break;
-                    case 9: pago.setBong((Double) value); break;
-                    case 10: pago.setModValue((Double) value); break;
-                    case 11: pago.setRet((Double) value); break;
+                try {
+                    switch (columnIndex) {
+                        case 5: pago.setDiast((Integer) value); break;
+                        case 6: pago.setDiasd((Integer) value); break;
+                        case 7: pago.setMediosd((Integer) value); break;
+                        case 8: pago.setBonp((Double) value); break;
+                        case 9: pago.setBong((Double) value); break;
+                        case 10: pago.setModValue((Double) value); break;
+                        case 11: pago.setRet((Double) value); break;
+                    }
+
+                    pago.setPagtot(calcularPagoTotal(pago));
+
+                    fireTableCellUpdated(rowIndex, columnIndex);
+                    fireTableCellUpdated(rowIndex, 12); // Actualizar la columna de Pago Total
+                } catch (ClassCastException e) {
+                    JOptionPane.showMessageDialog(PagosView.this, "Error al actualizar el valor: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
-
-                pago.setPagtot(calcularPagoTotal(pago));
-
-                fireTableCellUpdated(rowIndex, columnIndex);
-                fireTableCellUpdated(rowIndex, 12); // Actualizar la columna de Pago Total
             }
 
             @Override
@@ -96,7 +101,7 @@ public class PagosView extends JFrame {
             public Class<?> getColumnClass(int columnIndex) {
                 if (columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3) {
                     return String.class; 
-                } else if (columnIndex == 4 || columnIndex == 8 || columnIndex == 9 || columnIndex == 10) {
+                } else if (columnIndex == 4 || columnIndex == 8 || columnIndex == 9 || columnIndex == 10 || columnIndex == 11) {
                     return Double.class;
                 } else {
                     return Integer.class; 
@@ -162,6 +167,8 @@ public class PagosView extends JFrame {
         btnAceptar.addActionListener(e -> {
             try {
                 pagoJpaController.create(pagos);
+                ExportarController export = new ExportarController(pagos);
+                export.exportarAExcel();
                 JOptionPane.showMessageDialog(PagosView.this, "Pagos guardados exitosamente.");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(PagosView.this, "Error al guardar los pagos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

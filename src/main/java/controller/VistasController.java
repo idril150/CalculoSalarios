@@ -7,6 +7,7 @@ import vista.BonosView;
 import vista.CalendarioView;
 import vista.EmpleadoView;
 import vista.EmpleadosVista;
+import vista.ExportarHistorial;
 import vista.Inicio;
 import vista.PagosView;
 
@@ -64,5 +65,11 @@ public class VistasController {
         PagosView view = new PagosView(pagos, pagoJpaController); // Uso de pagoJpaController inicializado
         view.setVisible(true); // Añadir visibilidad
         view.setLocationRelativeTo(null); // Añadir localización
+    }
+    
+    public void vistaExportar(){
+        ExportarHistorial view = new ExportarHistorial();
+        view.setVisible(true);
+        view.setLocationRelativeTo(null);
     }
 }

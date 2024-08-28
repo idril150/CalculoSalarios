@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Empleado;
 import model.Pago;
-import vista.PagosView;
-
-
 
 public class CalculoController {
     ChecadorJpaController chctrl = new ChecadorJpaController();
@@ -23,7 +20,7 @@ public class CalculoController {
         List<Pago> pagos = new ArrayList<>();
         for (Empleado empleado : empleados) {
             dt = chctrl.obtenerDiasTrabajados(empleado.getId(), fechaInicio, fechaFinal);
-            Pago pago = new Pago(empleado, dt, 0, 0, empleado.getBonop(), 0,0, 0, 0, obtenerFechaHoy());
+            Pago pago = new Pago(empleado, dt, 2, 0, empleado.getBonop(), 0,0, 0, 0, obtenerFechaHoy());
             pago.setPagtot(((pago.getEmpleado().getSalario() / 30) * pago.getDiast()) + ((pago.getEmpleado().getSalario() / 30) * pago.getDiasd())
                 + pago.getBong() - (((pago.getEmpleado().getSalario() / 30)) / 2 * pago.getMediosd()) - pago.getRet()+pago.getEmpleado().getBonop());
             pagos.add(pago);
@@ -35,19 +32,13 @@ public class CalculoController {
         
     }
     
-    public static int obtenerFechaHoy() {
-        // Obtiene la fecha actual
+    public int obtenerFechaHoy() {
         LocalDate fechaActual = LocalDate.now();
-
-        // Define el formato deseado
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-        // Convierte la fecha al formato especificado
         String fechaFormateada = fechaActual.format(formatter);
-
-        // Convierte la fecha formateada en un entero
         return Integer.parseInt(fechaFormateada);
     }
+    
     
     public double recalCulo (Pago pago){
         double salD = pago.getEmpleado().getSalario()/30;
