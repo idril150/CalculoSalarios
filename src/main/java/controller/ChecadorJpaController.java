@@ -8,9 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 public class ChecadorJpaController {
-    
+
     EntityManagerFactory emf;
 
     public ChecadorJpaController(EntityManagerFactory emf) {
@@ -20,21 +19,17 @@ public class ChecadorJpaController {
     public ChecadorJpaController() {
         emf = Persistence.createEntityManagerFactory("dbChecador");
     }
-    
-    public EntityManager getEntityManager(){
+
+    public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-    
+
     public List<Object[]> encontrarEmpleados() {
-    EntityManager em = null;
+        EntityManager em = null;
         try {
             em = getEntityManager();
-            String sql = "SELECT e.ID, e.Name, e.LastName, b.Name AS branchName, " +
-             "s2.Name AS sorter2Name, s1.Name AS sorter1Name " +
-             "FROM employee e " +
-             "LEFT JOIN branch b ON e.IDBranch = b.ID " +
-             "LEFT JOIN sorter s2 ON e.IDSorter2 = s2.ID " +
-             "LEFT JOIN sorter s1 ON e.IDSorter1 = s1.ID";
+             String sql = "SELECT e.ID, e.Name, e.LastName, e.IDBranch, e.IDSorter1, e.IDSorter2 "
+                   + "FROM employee e";
             Query query = em.createNativeQuery(sql);
             return query.getResultList();
         } catch (Exception e) {
@@ -47,15 +42,56 @@ public class ChecadorJpaController {
             }
         }
     }
-    
-    public int obtenerDiasTrabajados(int id, int fechIni, int fechFin) {
-    EntityManager em = null;
+
+    public List<Object[]> encontrarDestinos() {
+        EntityManager em = null;
         try {
             em = getEntityManager();
-            String sql = "SELECT DISTINCT(f.DateTime) " +
-                         "FROM event f " +
-                         "WHERE f.IDEmployee = :id " +
-                         "AND f.DateTime BETWEEN :fechIni AND :fechFin";
+            // Corregir la consulta SQL eliminando la coma antes de FROM
+            String sql = "SELECT b.ID, b.Name FROM branch b";
+            // Utiliza createQuery en lugar de createNamedQuery ya que no es una consulta nombrada
+            Query query = em.createNativeQuery(sql); // createNativeQuery para consultas SQL nativas
+            return query.getResultList();
+        } catch (Exception e) {
+            // Manejar excepción
+            System.err.println("Error al encontrar Destinos: " + e.getMessage());
+            throw e;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public List<Object[]> encontrarClasificaciones() {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            // Corregir la consulta SQL eliminando la coma antes de FROM
+            String sql = "SELECT b.ID, b.Name FROM sorter b";
+            // Utiliza createQuery en lugar de createNamedQuery ya que no es una consulta nombrada
+            Query query = em.createNativeQuery(sql); // createNativeQuery para consultas SQL nativas
+            return query.getResultList();
+        } catch (Exception e) {
+            // Manejar excepción
+            System.err.println("Error al encontrar Destinos: " + e.getMessage());
+            throw e;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+
+    public int obtenerDiasTrabajados(int id, int fechIni, int fechFin) {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            String sql = "SELECT DISTINCT(f.DateTime) "
+                    + "FROM event f "
+                    + "WHERE f.IDEmployee = :id "
+                    + "AND f.DateTime BETWEEN :fechIni AND :fechFin";
 
             Query query = em.createNativeQuery(sql);
             query.setParameter("id", id);

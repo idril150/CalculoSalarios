@@ -5,6 +5,9 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <class>model.Empleado</class>
     <class>model.Pago</class>
+    <class>model.Destino</class>
+    <class>model.PagoDestino</class>
+    <class>model.PagoTotal</class>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/db1?serverTimezone=UTC"/>
@@ -19,14 +22,18 @@
   <persistence-unit name="dbChecador" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <properties>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/datoschecador?serverTimezone=UTC"/>
+      <!--<property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://SERVIDOR:3306/datoschecador?serverTimezone=UTC"/>
       <property name="jakarta.persistence.jdbc.user" value="root"/>
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="jakarta.persistence.jdbc.password" value=""/>
+      <property name="jakarta.persistence.jdbc.password" value="Sistemas123#"/>-->
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
       <property name="hibernate.hikari.maximumPoolSize" value="10"/>
       <property name="hibernate.hikari.minimumIdle" value="5"/>
       <property name="hibernate.hbm2ddl.auto" value="none"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/datoschecador?serverTimezone=UTC"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value=""/>
     </properties>
   </persistence-unit>
 </persistence>

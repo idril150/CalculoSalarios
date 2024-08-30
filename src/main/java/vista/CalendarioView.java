@@ -8,19 +8,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.toedter.calendar.JCalendar;
 import controller.CalculoController;
-import controller.EmpleadoJpaController;
-import model.Pago;
 import controller.VistasController;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import model.Empleado;
+import java.util.List;
 
 public class CalendarioView extends JFrame {
+    
+    private VistasController vctrl = new VistasController();
     private final JCalendar calendarioInicio;
     private final JCalendar calendarioFin;
     private final SimpleDateFormat dateFormat;
 
-    public CalendarioView() {
+    public CalendarioView(List<Empleado> empleados) {        
         setTitle("Seleccionar Fechas");
         setSize(600, 300);  // Ajustado el tamaño para dar más espacio
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);  // Añade espacio alrededor de los componentes
@@ -69,14 +73,14 @@ public class CalendarioView extends JFrame {
                 int fechaFinInt = Integer.parseInt(fechaFinStr);
                 if (fechaInicio != null && fechaFin != null) {
                         if (fechaInicioInt < fechaFinInt){
-                            System.out.println("Fecha de Inicio: " + dateFormat.format(fechaInicio));
-                            System.out.println("Fecha de Fin: " + dateFormat.format(fechaFin));
+                            //System.out.println("Fecha de Inicio: " + dateFormat.format(fechaInicio));
+                            //System.out.println("Fecha de Fin: " + dateFormat.format(fechaFin));
                             CalculoController calctrl = new CalculoController();
-                            EmpleadoJpaController empctrl = new EmpleadoJpaController();
                             VistasController vctrl = new VistasController();
-                            System.out.println(empctrl.findEmpleados());
-                            var pagos = calctrl.calculasSalario(empctrl.findEmpleados(), fechaInicioInt, fechaFinInt);
-                            vctrl.vistaBonos(pagos);
+                            //System.out.println(empctrl.findEmpleados());
+                            var pagos = calctrl.calculasSalario(empleados, fechaInicioInt, fechaFinInt);
+                            vctrl.vistaBonos(pagos,empleados);
+                            System.out.println(fechaFinStr);
                             dispose();                          
                         }else{
                             JOptionPane.showMessageDialog(null, "la fecha de inicio no puede ser posterior a la fecha final");
@@ -91,5 +95,17 @@ public class CalendarioView extends JFrame {
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(aceptarButton, gbc);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                vctrl.iniciar();  // Regresar a la vista de inicio
+                dispose();  // Cerrar la vista de empleados
+            }
+        });
+
     }
+    
+    
+    
 }

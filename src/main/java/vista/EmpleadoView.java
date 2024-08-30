@@ -5,6 +5,8 @@
 package vista;
 
 import controller.EmpleadoJpaController;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Empleado;
 
 /**
@@ -22,10 +24,11 @@ public class EmpleadoView extends javax.swing.JFrame {
     }
     
     private EmpleadosVista parentFrame;
-    
-    public EmpleadoView(EmpleadosVista parentFrame) {
+    private Empleado empleado;
+    public EmpleadoView(EmpleadosVista parentFrame, Empleado empleado) {
     initComponents();
     this.parentFrame = parentFrame;
+    this.empleado=empleado;
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);  // Solo cierra esta ventana
     }
 
@@ -199,22 +202,24 @@ public class EmpleadoView extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        EmpleadoJpaController ectrl = new EmpleadoJpaController();
-        Empleado empleado = new Empleado();
+        EmpleadoJpaController ectrl = new EmpleadoJpaController();        
         empleado.setId(Integer.parseInt(jLId.getText()));
         empleado.setNombre(jTNombre.getText());
-        empleado.setPuesto(jTPuesto.getText());
-        empleado.setZona(jTZona.getText());
+        //empleado.setPuesto(jTPuesto.getText());
+        //empleado.setZona(jTZona.getText());
         empleado.setSalario(Double.parseDouble(jTSalario.getText()));    
-        empleado.setHorario(jTHorario.getText());
+        //empleado.setHorario(jTHorario.getText());
         empleado.setBonop(Double.parseDouble(jTBono.getText()));
-        ectrl.edit(empleado);
+        try {
+            ectrl.edit(empleado);
+        } catch (Exception ex) {
+            Logger.getLogger(EmpleadoView.class.getName()).log(Level.SEVERE, null, ex);
+        }
         // Notificar a la vista de empleados sobre la actualización
         if (parentFrame != null) {
-            parentFrame.actualizarTabla(ectrl.findEmpleados());
+            parentFrame.actualizarTabla(ectrl.findEmpleadoEntities());
         }
         dispose();
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

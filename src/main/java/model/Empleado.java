@@ -2,11 +2,12 @@ package model;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import org.hibernate.annotations.ManyToAny;
 
 
 @Entity
@@ -16,34 +17,66 @@ public class Empleado implements Serializable {
     @Id   
     private int id;
     
+    @ManyToOne
+    @JoinColumn(name = "destino_id", nullable = false)
+    private Destino destino;
+    @ManyToOne
+    @JoinColumn(name = "clasificacion_id1", nullable = false)
+    private Clasificacion horario;
+    @ManyToOne
+    @JoinColumn(name = "clasificasion_id2", nullable = false)
+    private Clasificacion puesto;
+    
     @Basic
     private String nombre;
-    private String puesto;
     private double salario;
-    private String zona;
-    private String horario;
     private double bonop;
+    private boolean estado;
 
     public Empleado() {
     }
 
-    public Empleado(int id, String nombre, String puesto, double salario, String zona, String horario, double bonop) {
+    public Empleado(int id, Destino destino, Clasificacion horario, Clasificacion puesto, String nombre, double salario, double bonop, boolean estado) {
         this.id = id;
-        this.nombre = nombre;
-        this.puesto = puesto;
-        this.salario = salario;
-        this.zona = zona;
+        this.destino = destino;
         this.horario = horario;
+        this.puesto = puesto;
+        this.nombre = nombre;
+        this.salario = salario;
         this.bonop = bonop;
+        this.estado = estado;
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Destino getDestino() {
+        return destino;
+    }
+
+    public void setDestino(Destino destino) {
+        this.destino = destino;
+    }
+
+    public Clasificacion getHorario() {
+        return horario;
+    }
+
+    public void setHorario(Clasificacion horario) {
+        this.horario = horario;
+    }
+
+    public Clasificacion getPuesto() {
+        return puesto;
+    }
+
+    public void setPuesto(Clasificacion puesto) {
+        this.puesto = puesto;
     }
 
     public String getNombre() {
@@ -54,36 +87,12 @@ public class Empleado implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getPuesto() {
-        return puesto;
-    }
-
-    public void setPuesto(String puesto) {
-        this.puesto = puesto;
-    }
-
     public double getSalario() {
         return salario;
     }
 
     public void setSalario(double salario) {
         this.salario = salario;
-    }
-
-    public String getZona() {
-        return zona;
-    }
-
-    public void setZona(String zona) {
-        this.zona = zona;
-    }
-
-    public String getHorario() {
-        return horario;
-    }
-
-    public void setHorario(String horario) {
-        this.horario = horario;
     }
 
     public double getBonop() {
@@ -94,9 +103,17 @@ public class Empleado implements Serializable {
         this.bonop = bonop;
     }
 
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
-        return "Empleado{" + "id=" + id + ", nombre=" + nombre + ", puesto=" + puesto + ", salario=" + salario + ", zona=" + zona + ", horario=" + horario + ", bonop=" + bonop + '}';
+        return "Empleado{" + "id=" + id + ", destino=" + destino + ", horario=" + horario + ", puesto=" + puesto + ", nombre=" + nombre + ", salario=" + salario + ", bonop=" + bonop + ", estado=" + estado + '}';
     }
-        
+
 }

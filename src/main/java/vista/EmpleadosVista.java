@@ -2,7 +2,6 @@ package vista;
 
 import controller.VistasController;
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
@@ -34,17 +33,14 @@ public class EmpleadosVista extends JFrame {
                 empleado.getId(),
                 empleado.getNombre(),
                 empleado.getSalario(),
-                empleado.getPuesto(),
-                empleado.getZona(),
-                empleado.getHorario(),
+                empleado.getPuesto().getName(),
+                empleado.getDestino().getNombre(),
+                empleado.getHorario().getName(),
                 empleado.getBonop(),
                 "EDITAR"  // Texto del botón
             };
             model.addRow(fila);
         }
-        
-        
-
 
         // Crear la tabla y agregar el modelo
         empleadoTable = new JTable(model);
@@ -75,8 +71,6 @@ public class EmpleadosVista extends JFrame {
                 dispose();  // Cerrar la vista de empleados
             }
         });
-        
-
 
         // Mostrar la ventana
         setVisible(true);
@@ -92,9 +86,9 @@ public class EmpleadosVista extends JFrame {
                 empleado.getId(),
                 empleado.getNombre(),
                 empleado.getSalario(),
-                empleado.getPuesto(),
-                empleado.getZona(),
-                empleado.getHorario(),
+                empleado.getPuesto().getName(),
+                empleado.getDestino().getNombre(),
+                empleado.getHorario().getName(),
                 empleado.getBonop(),
                 "EDITAR"  // Texto del botón
             };

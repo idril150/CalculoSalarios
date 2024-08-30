@@ -5,9 +5,16 @@
 package vista;
 
 import controller.ChecadorJpaController;
+import controller.ClasificacionJpaController;
+import controller.DestinoJpaController;
 import controller.EmpleadoJpaController;
 import controller.VistasController;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import model.Clasificacion;
+import model.Destino;
 import model.Empleado;
 
 /**
@@ -19,8 +26,10 @@ VistasController view = new VistasController();
     /**
      * Creates new form Inicio
      */
-    public Inicio() {
+     List<Empleado> empleados;
+    public Inicio(List<Empleado> empleados) {
         initComponents();
+        this.empleados=empleados;
     }
 
     /**
@@ -33,13 +42,17 @@ VistasController view = new VistasController();
     private void initComponents() {
 
         jButton2 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
 
         jButton2.setText("jButton2");
+
+        jButton6.setText("jButton6");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -71,6 +84,13 @@ VistasController view = new VistasController();
             }
         });
 
+        jButton7.setText("AÑADIR DESTINOS");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -78,6 +98,7 @@ VistasController view = new VistasController();
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -87,15 +108,17 @@ VistasController view = new VistasController();
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(24, 24, 24)
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -110,7 +133,7 @@ VistasController view = new VistasController();
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         pack();
@@ -119,46 +142,53 @@ VistasController view = new VistasController();
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         ChecadorJpaController cctrl = new ChecadorJpaController();
         EmpleadoJpaController ectrl = new EmpleadoJpaController();
+        DestinoJpaController dctrl = new DestinoJpaController();   
+        ClasificacionJpaController csctrl = new ClasificacionJpaController();
         List<Object[]> checador = cctrl.encontrarEmpleados();
-        System.out.printf("%-5s %-20s %-20s %-20s %-20s%n", "ID", "Name", "Last Name", "Branch", "Sorter2", "horario");
+        //System.out.printf("%-5s %-20s %-20s %-20s %-20s%n", "ID", "Name", "Last Name", "Branch", "Sorter2", "horario");
         for (Object[] row : checador) {
             // Asumimos que el orden es ID, Name, LastName, BranchName, Sorter2Name
             Integer id = (Integer) row[0];
             String name = (String) row[1];
             String lastName = (String) row[2];
-            String branchName = (String) row[3];
-            String sorter2Name = (String) row[4];
-            String horario = (String) row[5];
-
+            int iDBranch = (Integer) row[3];
+            int hor = (Integer) row[4];
+            int pues = (Integer) row[5];
             // Verificar si el empleado ya existe
             Empleado existingEmpleado = ectrl.findEmpleado(id);
             if (existingEmpleado != null) {
-                System.out.printf("Empleado con ID %d ya existe. Saltando al siguiente.%n", id);
+               // System.out.printf("Empleado con ID %d ya existe. Saltando al siguiente.%n", id);
                 continue; // Saltar al siguiente empleado
             }
 
             // Crear el nuevo empleado
-            Empleado empleado = new Empleado(id, name+" "+lastName, sorter2Name, 0, branchName, horario, 0);
-            
+            Destino destino = dctrl.findDestino(iDBranch);
+            Clasificacion horario = csctrl.findClasificacion(hor);
+            Clasificacion puesto = csctrl.findClasificacion(pues);
+            Empleado empleado = new Empleado(id, destino, horario, puesto, name+" "+lastName, 0, 0, true);            
             try {
                 ectrl.create(empleado);
-                System.out.println(empleado.toString());
-                System.out.println("Empleado creado exitosamente.\n");
+                //System.out.println(empleado.toString());
+                //System.out.println("Empleado creado exitosamente.\n");
             } catch (Exception e) {
                 System.err.println("Error al crear el empleado: " + e.getMessage());
-            }
-
+            }            
             //System.out.printf("%-5d %-20s %-20s %-20s %-20s%n", id, name, lastName, branchName, sorter2Name);
         }
+        JOptionPane OptionPane = new JOptionPane();
+            OptionPane.showMessageDialog(null, 
+                              "Empleados agregados exitosamente", 
+                              "", 
+                              JOptionPane.WARNING_MESSAGE);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        view.vistaEmpleados();
+        view.vistaEmpleados(this.empleados);
         dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        view.vistaCalendario();
+        view.vistaCalendario(this.empleados);
         dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -166,6 +196,49 @@ VistasController view = new VistasController();
         view.vistaExportar();;
         dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        ChecadorJpaController cctrl = new ChecadorJpaController();
+        DestinoJpaController dctrl = new DestinoJpaController();  
+        ClasificacionJpaController clcrl = new ClasificacionJpaController();
+        List<Object[]> destinos = cctrl.encontrarDestinos();
+        for(Object[] row : destinos){
+            Integer id = (Integer) row[0];
+            String nombre = (String) row[1];
+            Destino findDestino = dctrl.findDestino(id);
+            if(findDestino != null){
+                continue;
+            }else{
+                Destino destino = new Destino(id, nombre, true);
+                try {
+                    dctrl.create(destino);
+                } catch (Exception ex) {
+                    Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        List<Object[]> clasificaciones = cctrl.encontrarClasificaciones();
+        JOptionPane OptionPane = new JOptionPane();
+        for(Object[] row : clasificaciones){
+            int id = (Integer) row[0];
+            String nombre = (String) row[1];
+            Clasificacion findClasificacion = clcrl.findClasificacion(id);
+            if(findClasificacion != null){
+                continue;
+            }else{
+                Clasificacion clasificacion = new Clasificacion(id, nombre);
+                try {
+                    clcrl.create(clasificacion);
+                } catch (Exception ex) {
+                    Logger.getLogger(Inicio.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+            OptionPane.showMessageDialog(null, 
+                              "Destinos agregados exitosamente", 
+                              "", 
+                              JOptionPane.WARNING_MESSAGE);
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,6 +251,8 @@ VistasController view = new VistasController();
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

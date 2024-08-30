@@ -6,8 +6,9 @@ package vista;
 
 import controller.ExportarController;
 import controller.PagoJpaController;
-import java.util.AbstractList;
-import java.util.ArrayList;
+import controller.VistasController;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +24,7 @@ public class ExportarHistorial extends javax.swing.JFrame {
     /**
      * Creates new form ExportarHistorial
      */
-    private PagoJpaController pctrl = new PagoJpaController();
+    private final PagoJpaController pctrl = new PagoJpaController();
     private List<Integer> fechas; // Lista de fechas disponibles
 
     /**
@@ -33,6 +34,20 @@ public class ExportarHistorial extends javax.swing.JFrame {
         initComponents();
         // Cargar las fechas únicas en el JComboBox
         cargarFechas();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {            
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Cierra esta ventana
+                dispose();
+
+                // Muestra la vista de CalendarioView
+                VistasController vctrl = new VistasController();
+                vctrl.iniciar();
+                
+            }
+        });
+
     }
 
     private void cargarFechas() {
@@ -104,27 +119,27 @@ public class ExportarHistorial extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        int selectedIndex = jCFech.getSelectedIndex();
 
-// Verifica si el índice es válido
-if (selectedIndex >= 0 && selectedIndex < fechas.size()) {
-    // Obtén la fecha correspondiente al índice seleccionado
-    int fecha = fechas.get(selectedIndex);
+        // Verifica si el índice es válido
+        if (selectedIndex >= 0 && selectedIndex < fechas.size()) {
+            // Obtén la fecha correspondiente al índice seleccionado
+            int fecha = fechas.get(selectedIndex);
 
-    // Obtén la lista de pagos para la fecha seleccionada
-    List<Pago> pagos = pctrl.findPagosFech(fecha);
+            // Obtén la lista de pagos para la fecha seleccionada
+            List<Pago> pagos = pctrl.findPagosFech(fecha);
 
-    // Crea el ExportarController con la lista de pagos
-    ExportarController exctrl = new ExportarController(pagos);
+            // Crea el ExportarController con la lista de pagos
+            ExportarController exctrl = new ExportarController(pagos);
 
-    try {
-        // Exporta a Excel
-        exctrl.exportarAExcel();
-    } catch (Exception ex) {
-        Logger.getLogger(ExportarHistorial.class.getName()).log(Level.SEVERE, null, ex);
-    }
-} else {
-    // Manejo de error si el índice seleccionado es inválido
-    JOptionPane.showMessageDialog(this, "Por favor, seleccione una fecha válida.", "Error", JOptionPane.ERROR_MESSAGE);
-}
+            try {
+                // Exporta a Excel
+                exctrl.exportarAExcel();
+            } catch (Exception ex) {
+                Logger.getLogger(ExportarHistorial.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            // Manejo de error si el índice seleccionado es inválido
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una fecha válida.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
