@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import model.Pago;
 import model.PagoDestino;
@@ -22,14 +23,17 @@ public class PagosView extends JFrame {
     private final JTable secondTable;
     private final AbstractTableModel tableModel;
     private final AbstractTableModel tableModel2;
-    private List<Pago> pagos;
+    private List<Pago> pagos = new ArrayList<>();
     private List<PagoDestino> pagosDestinos;
     private PagoTotal pagoTotal;
 
-    public PagosView(List<Pago> pagos, List<PagoDestino> pagosDestinos, PagoTotal pagoTotal, PagoJpaController pagoJpaController) {
-        this.pagos = pagos;
-        this.pagosDestinos = pagosDestinos;
+    public PagosView(PagoTotal pagoTotal, PagoJpaController pagoJpaController) {        
         this.pagoTotal = pagoTotal;
+        this.pagosDestinos = pagoTotal.getPagodestinos();
+        for(PagoDestino pagdes : this.pagosDestinos){
+            this.pagos.addAll(pagdes.getPagos());
+        }
+        
 
         setTitle("Pagos");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -219,17 +223,14 @@ public class PagosView extends JFrame {
         // Botón Aceptar
         JButton btnAceptar = new JButton("Aceptar");
         btnAceptar.addActionListener(e -> {
+            ExportarController export = new ExportarController(pagoTotal);
+            export.exportarAExcel();
             try {
-                pagoJpaController.create(pagos);
-                for (PagoDestino pagoDestino : pagosDestinos) {
-                    pdctl.create(pagoDestino);
-                }
-
-                // Guardar el PagoTotal
                 ptotal.create(pagoTotal);
-                pagoTotal.getPagodestinos().get(1).getPagos().get(0).getEmpleado().getNombre();
-                ExportarController export = new ExportarController(pagos);
-                export.exportarAExcel();
+                System.out.println(pagoTotal.toString());
+                //pagoTotal.getPagodestinos().get(1).getPagos().get(0).getEmpleado().getNombre();
+                
+                
                 JOptionPane.showMessageDialog(PagosView.this, "Pagos guardados exitosamente.");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(PagosView.this, "Error al guardar los pagos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -245,17 +246,18 @@ public class PagosView extends JFrame {
     // Método para calcular el pago total
     private double calcularPagoTotal(Pago pago) {
         double salarioDiario = pago.getEmpleado().getSalario() / 30;
-        return salarioDiario * (pago.getDiast() + pago.getDiasd() + 0.5 * pago.getMediosd()) + pago.getBonp() + pago.getBong() - pago.getRet();
+        return salarioDiario * (pago.getDiast() + pago.getDiasd() + 0.5 * pago.getMediosd()) + pago.getBonp() + pago.getBong() - pago.getRet() + pago.getModValue();
     }
 
     private void actualizarTotales() {
         // Recalcular los totales de cada PagoDestino
+        double pagosFinales = 0;
         for (PagoDestino pagoDestino : pagosDestinos) {
-            pagoDestino.setTotal(pagoDestino.sumaPagos());
+            pagosFinales+=pagoDestino.sumaPagos();
         }
 
         // Calcular el total general sumando todos los totales de PagoDestino
-        double totalGeneral = pagosDestinos.stream().mapToDouble(PagoDestino::getTotal).sum();
+        double totalGeneral = pagosFinales;
         pagoTotal.setTotal(totalGeneral);
 
         // Actualizar el modelo de la segunda tabla

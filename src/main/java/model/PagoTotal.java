@@ -7,6 +7,7 @@ package model;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,27 +15,24 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-/**
- *
- * @author Victor Muñoz Rodas
- */
 @Entity
 @Table(name = "Pagototal")
 public class PagoTotal implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
-    
-    @OneToMany(mappedBy = "pagototal", cascade = CascadeType.ALL)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToMany(mappedBy = "pagototal", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PagoDestino> pagodestinos = new ArrayList<>();
-    
+
     @Basic
-    double total;
-    int fecha;
-    int contador;
+    private double total;
+    private int fecha;
+    private int contador;
 
     public PagoTotal() {
     }
@@ -54,11 +52,29 @@ public class PagoTotal implements Serializable {
     }
 
     public List<PagoDestino> getPagodestinos() {
+        if (pagodestinos == null) {
+            pagodestinos = new ArrayList<>(); // Asegura que nunca sea null
+        }
         return pagodestinos;
+    }
+
+
+    public void addPagoDestino(PagoDestino pagodestino) {
+        pagodestinos.add(pagodestino);
+        pagodestino.setPagototal(this);
     }
 
     public void setPagodestinos(List<PagoDestino> pagodestinos) {
         this.pagodestinos = pagodestinos;
+        for (PagoDestino pd : pagodestinos) {
+            pd.setPagototal(this);
+        }
+    }
+
+    
+    public void removePagoDestino(PagoDestino pagodestino) {
+        pagodestinos.remove(pagodestino);
+        pagodestino.setPagototal(null);
     }
 
     public double getTotal() {
@@ -87,7 +103,7 @@ public class PagoTotal implements Serializable {
 
     @Override
     public String toString() {
-        return "PagoTotal{" + "id=" + id + ", pagodestinos=" + pagodestinos + ", total=" + total + ", fecha=" + fecha + ", contador=" + contador + '}';
+        return "PagoTotal{id=" + id + ", total=" + total + ", numPagosDestinos=" + pagodestinos + "}";
     }
-    
+
 }

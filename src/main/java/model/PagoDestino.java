@@ -7,6 +7,7 @@ package model;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,34 +18,29 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-/**
- *
- * @author Victor Muñoz Rodas
- */
+
 @Entity
 @Table(name = "Pagodestino")
 public class PagoDestino implements Serializable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @ManyToOne
-    @JoinColumn(name="destino_id", nullable = false)
+    @JoinColumn(name = "pagototal_id")
+    private PagoTotal pagototal;
+
+    @OneToMany(mappedBy = "pagodestino", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Pago> pagos = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "destino_id", nullable = false)
     private Destino destino;
 
-    @OneToMany(mappedBy = "pagoDestino", cascade = CascadeType.ALL)
-    private List<Pago> pagos = new ArrayList<>();
-    
-    @ManyToOne
-    @JoinColumn(name = "pago_total_id")
-    private PagoTotal pagototal;
-    
     @Basic
-    private double total;
     private int fecha;
     private int contador;
-
-
 
     public PagoDestino() {
     }
@@ -54,7 +50,7 @@ public class PagoDestino implements Serializable {
         this.fecha = fecha;
         this.contador = contador;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -63,12 +59,45 @@ public class PagoDestino implements Serializable {
         this.id = id;
     }
 
-    public double getTotal() {
-        return total;
+    public Destino getDestino() {
+        return destino;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public void setDestino(Destino destino) {
+        this.destino = destino;
+    }
+
+    public List<Pago> getPagos() {
+        if (pagos == null) {
+            pagos = new ArrayList<>(); // Asegura que nunca sea null
+        }
+        return pagos;
+    }
+
+    public void setPagos(List<Pago> pagos) {
+        this.pagos = pagos;
+        for(Pago pag : pagos){
+            pag.setPagoDestino(this);
+        }
+    }
+
+    public void addPago(Pago pago) {
+        pagos.add(pago);
+        pago.setPagoDestino(this);
+    }
+    
+    public void removePago(Pago pago) {
+        pagos.remove(pago);
+        pago.setPagoDestino(null);
+    }
+    
+
+    public PagoTotal getPagototal() {
+        return pagototal;
+    }
+
+    public void setPagototal(PagoTotal pagototal) {
+        this.pagototal = pagototal;
     }
 
     public int getFecha() {
@@ -87,41 +116,17 @@ public class PagoDestino implements Serializable {
         this.contador = contador;
     }
 
-    public Destino getDestino() {
-        return destino;
-    }
-
-    public void setDestino(Destino destino) {
-        this.destino = destino;
-    }
-
-    public List<Pago> getPagos() {
-        return pagos;
-    }
-
-    public void setPagos(List<Pago> pagos) {
-        this.pagos = pagos;
-    }
-
-    public PagoTotal getPagototal() {
-        return pagototal;
-    }
-
-    public void setPagototal(PagoTotal pagototal) {
-        this.pagototal = pagototal;
-    }
-
     @Override
     public String toString() {
-        return "PagoDestino{" + "id=" + id + ", destino=" + destino + ", pagos=" + pagos + ", pagototal=" + pagototal + ", total=" + total + ", fecha=" + fecha + ", contador=" + contador + '}';
+        return "PagoDestino{id=" + id + ", destino=" + destino.getNombre() + ", numPagos=" + pagos + "}";
     }
-    
-    public Double sumaPagos(){
-        double a=0;
-        for(Pago pago:pagos){
-            a+=pago.getPagtot();
+
+
+    public Double sumaPagos() {
+        double suma = 0;
+        for (Pago pago : pagos) {
+            suma += pago.getPagtot();
         }
-        return a;
+        return suma;
     }
-    
 }

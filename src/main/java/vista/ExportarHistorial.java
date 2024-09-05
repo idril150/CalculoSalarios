@@ -6,6 +6,7 @@ package vista;
 
 import controller.ExportarController;
 import controller.PagoJpaController;
+import controller.PagoTotalJpaController;
 import controller.VistasController;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -14,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Pago;
+import model.PagoTotal;
+import org.hibernate.Hibernate;
 
 /**
  *
@@ -24,8 +27,7 @@ public class ExportarHistorial extends javax.swing.JFrame {
     /**
      * Creates new form ExportarHistorial
      */
-    private final PagoJpaController pctrl = new PagoJpaController();
-    private List<Integer> fechas; // Lista de fechas disponibles
+    private final PagoTotalJpaController pTctrl = new PagoTotalJpaController();
 
     /**
      * Creates new form ExportarHistorial
@@ -51,8 +53,7 @@ public class ExportarHistorial extends javax.swing.JFrame {
     }
 
     private void cargarFechas() {
-        fechas = pctrl.findDistinctFechas();
-        jCFech.setModel(pctrl.fechaComboBoxModel());
+        jCFech.setModel(pTctrl.fechaComboBoxModel());
     }
     
 
@@ -73,7 +74,12 @@ public class ExportarHistorial extends javax.swing.JFrame {
 
         jLabel1.setText("SELECCIONA LA FECHA DE LA NOMINA A EXPORTAR");
 
-        jCFech.setModel(pctrl.fechaComboBoxModel());
+        jCFech.setModel(pTctrl.fechaComboBoxModel());
+        jCFech.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCFechActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("EXPORTAR");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -118,35 +124,19 @@ public class ExportarHistorial extends javax.swing.JFrame {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        int selectedIndex = jCFech.getSelectedIndex();
-
-        // Verifica si el índice es válido
-        if (selectedIndex >= 0 && selectedIndex < fechas.size()) {
-            // Obtén la fecha correspondiente al índice seleccionado
-            int fecha = fechas.get(selectedIndex);
-
-            // Obtén la lista de pagos para la fecha seleccionada
-            List<Pago> pagos = pctrl.findPagosFech(fecha);
-
-            // Crea el ExportarController con la lista de pagos
-            ExportarController exctrl = new ExportarController(pagos);
-
-            try {
-                // Exporta a Excel
-                exctrl.exportarAExcel();
-            } catch (Exception ex) {
-                Logger.getLogger(ExportarHistorial.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            // Manejo de error si el índice seleccionado es inválido
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione una fecha válida.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
+       List<PagoTotal> pagosTotales = pTctrl.findPagoTotalEntities();
+       //System.out.println(pagosTotales.get(selectedIndex));        
+       ExportarController expctrl = new ExportarController(pagosTotales.get(selectedIndex));
+       expctrl.exportarAExcel();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jCFechActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCFechActionPerformed
+    }//GEN-LAST:event_jCFechActionPerformed
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    public javax.swing.JComboBox<String> jCFech;
+    private javax.swing.JComboBox<String> jCFech;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

@@ -333,6 +333,10 @@ public class CalculoController {
         }
         List<PagoDestino> pagosDestinos = pagosTotales(pagos);
         PagoTotal pagoTotal = pagoTotalSuma(pagosDestinos);
+        pagoTotal.setPagodestinos(pagosDestinos);
+        //System.out.println(pagoTotal.toString());
+        //PagoTotalJpaController ptctrl = new PagoTotalJpaController();
+        //ptctrl.create(pagoTotal);
         vctrl.vistaPagos(pagos, pagosDestinos, pagoTotal);
     }
     
@@ -369,7 +373,7 @@ public class CalculoController {
         pagosYumka.setPagos(pagosYum);
         PagoDestino pagosOficina = new PagoDestino(pagosOf.get(0).getEmpleado().getDestino(), fecha, 0);
         pagosOficina.setPagos(pagosOf);
-        System.out.println(pagosTamatan);
+        //System.out.println(pagosTamatan);
         List<PagoDestino> pagosDestinos = new ArrayList<>();
         pagosDestinos.add(pagosZoomat);
         pagosDestinos.add(pagosTamatan);
@@ -401,9 +405,9 @@ public class CalculoController {
         }
         pagoTotal.setTotal(a);
         pagoTotal.setPagodestinos(pagosDestinos);
+        
         pagoTotal.setContador(0);
-        pagoTotal.setContador(0);
-        System.out.println(a);
+        //System.out.println(a);
         return pagoTotal;
     }
 

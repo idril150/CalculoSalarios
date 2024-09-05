@@ -18,6 +18,7 @@ import model.Pago;
 import java.util.ArrayList;
 import java.util.List;
 import model.PagoDestino;
+import org.hibernate.Hibernate;
 
 /**
  *
@@ -40,39 +41,35 @@ public class PagoDestinoJpaController implements Serializable {
     }
 
     public void create(PagoDestino pagoDestino) {
-        if (pagoDestino.getPagos() == null) {
-            pagoDestino.setPagos(new ArrayList<Pago>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+
+            // Persistir PagoTotal si es necesario
             PagoTotal pagototal = pagoDestino.getPagototal();
             if (pagototal != null) {
-                pagototal = em.getReference(pagototal.getClass(), pagototal.getId());
+                pagototal = em.getReference(PagoTotal.class, pagototal.getId());
                 pagoDestino.setPagototal(pagototal);
             }
-            List<Pago> attachedPagos = new ArrayList<Pago>();
-            for (Pago pagosPagoToAttach : pagoDestino.getPagos()) {
-                pagosPagoToAttach = em.getReference(pagosPagoToAttach.getClass(), pagosPagoToAttach.getId());
-                attachedPagos.add(pagosPagoToAttach);
-            }
-            pagoDestino.setPagos(attachedPagos);
+
+            // Persistir PagoDestino
             em.persist(pagoDestino);
-            if (pagototal != null) {
-                pagototal.getPagodestinos().add(pagoDestino);
-                pagototal = em.merge(pagototal);
-            }
-            for (Pago pagosPago : pagoDestino.getPagos()) {
-                PagoDestino oldPagoDestinoOfPagosPago = pagosPago.getPagoDestino();
-                pagosPago.setPagoDestino(pagoDestino);
-                pagosPago = em.merge(pagosPago);
-                if (oldPagoDestinoOfPagosPago != null) {
-                    oldPagoDestinoOfPagosPago.getPagos().remove(pagosPago);
-                    oldPagoDestinoOfPagosPago = em.merge(oldPagoDestinoOfPagosPago);
+
+            // Persistir los pagos asociados
+            for (Pago pago : pagoDestino.getPagos()) {
+                if (pago.getPagodestino() != null) {
+                    pago.setPagoDestino(pagoDestino);
                 }
+                em.persist(pago);
             }
+
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw new RuntimeException("Error al crear el PagoDestino", ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -80,6 +77,7 @@ public class PagoDestinoJpaController implements Serializable {
         }
     }
 
+    
     public void edit(PagoDestino pagoDestino) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
@@ -118,7 +116,7 @@ public class PagoDestinoJpaController implements Serializable {
             }
             for (Pago pagosNewPago : pagosNew) {
                 if (!pagosOld.contains(pagosNewPago)) {
-                    PagoDestino oldPagoDestinoOfPagosNewPago = pagosNewPago.getPagoDestino();
+                    PagoDestino oldPagoDestinoOfPagosNewPago = pagosNewPago.getPagodestino();
                     pagosNewPago.setPagoDestino(pagoDestino);
                     pagosNewPago = em.merge(pagosNewPago);
                     if (oldPagoDestinoOfPagosNewPago != null && !oldPagoDestinoOfPagosNewPago.equals(pagoDestino)) {
@@ -186,18 +184,28 @@ public class PagoDestinoJpaController implements Serializable {
     private List<PagoDestino> findPagoDestinoEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            CriteriaQuery<PagoDestino> cq = em.getCriteriaBuilder().createQuery(PagoDestino.class);
             cq.select(cq.from(PagoDestino.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
                 q.setFirstResult(firstResult);
             }
-            return q.getResultList();
+            List<PagoDestino> resultList = q.getResultList();
+
+            // Inicializa las colecciones para evitar LazyInitializationException
+            for (PagoDestino pagoDestino : resultList) {
+                // Forzar la carga de la colección
+                Hibernate.initialize(pagoDestino.getPagos());
+            }
+
+            return resultList;
         } finally {
             em.close();
         }
     }
+
+
 
     public PagoDestino findPagoDestino(int id) {
         EntityManager em = getEntityManager();

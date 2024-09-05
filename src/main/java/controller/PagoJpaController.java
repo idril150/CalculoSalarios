@@ -6,12 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import model.Pago;
 
 public class PagoJpaController implements Serializable {
@@ -53,11 +48,10 @@ public class PagoJpaController implements Serializable {
             tx = em.getTransaction();
             tx.begin();
             for (Pago pago : pagos) {
-                // Verificar si la entidad ya está gestionada
-                if (em.contains(pago)) {
-                    em.merge(pago); // Usa merge si la entidad ya está en la sesión
+                if (!em.contains(pago)) {
+                    em.persist(pago);
                 } else {
-                    em.persist(pago); // Usa persist para nuevas entidades
+                    // Optional: Handle cases where the entity is already managed
                 }
             }
             tx.commit();
@@ -65,7 +59,7 @@ public class PagoJpaController implements Serializable {
             if (tx != null && tx.isActive()) {
                 tx.rollback();
             }
-            throw new RuntimeException("Error al crear el pago", ex);
+            throw new RuntimeException("Error al crear los pagos", ex);
         } finally {
             if (em != null) {
                 em.close();
@@ -125,28 +119,6 @@ public class PagoJpaController implements Serializable {
                 em.close();
             }
         }
-    }
-     
-    
-    public ComboBoxModel<String> fechaComboBoxModel() {
-        List<Integer> fechas = findDistinctFechas();
-        List<String> fechasString = new ArrayList<>();
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-
-        for (Integer fecha : fechas) {
-            // Convertimos el int a String manteniendo el formato yyyyMMdd
-            String fechaString = String.format("%08d", fecha);
-            // Convertimos el String a LocalDate
-            LocalDate localDate = LocalDate.parse(fechaString, inputFormatter);
-            // Convertimos el LocalDate a String en el formato deseado
-            String fechaFormateada = localDate.format(outputFormatter);
-            fechasString.add(fechaFormateada);
-        }
-
-        // Convertimos la lista de String a DefaultComboBoxModel
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(fechasString.toArray(new String[0]));
-        return model;
     }
     
 }

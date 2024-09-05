@@ -96,15 +96,15 @@ public class ChecadorJpaController {
             Query query = em.createNativeQuery(sql);
             query.setParameter("id", id);
             query.setParameter("fechIni", fechIni * 1000000L);
-            query.setParameter("fechFin", fechFin * 1000000L);
-
+            query.setParameter("fechFin", fechFin * 1000000L+1000000L);            
             List<Long> dateTimeList = query.getResultList();
+            //System.out.println(dateTimeList);
             Set<Long> uniqueDates = new HashSet<>();
-
+            
             for (long date : dateTimeList) {
                 uniqueDates.add(date / 1000000L);
             }
-
+            //System.out.println(uniqueDates);
             return uniqueDates.size();
         } catch (Exception ex) {
             throw ex;

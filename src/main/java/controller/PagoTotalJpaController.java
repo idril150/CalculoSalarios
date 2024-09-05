@@ -13,14 +13,18 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import model.PagoDestino;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import model.PagoTotal;
 
 /**
  *
- * @author Soporte
+ * @author Soportew
  */
 public class PagoTotalJpaController implements Serializable {
 
@@ -32,40 +36,34 @@ public class PagoTotalJpaController implements Serializable {
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-    
+
     public PagoTotalJpaController() {
         emf = Persistence.createEntityManagerFactory("db1");
     }
 
     public void create(PagoTotal pagoTotal) {
-        if (pagoTotal.getPagodestinos() == null) {
-            pagoTotal.setPagodestinos(new ArrayList<PagoDestino>());
-        }
-        EntityManager em = null;
+        EntityManager em = getEntityManager();
         try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            List<PagoDestino> attachedPagodestinos = new ArrayList<PagoDestino>();
-            for (PagoDestino pagodestinosPagoDestinoToAttach : pagoTotal.getPagodestinos()) {
-                pagodestinosPagoDestinoToAttach = em.getReference(pagodestinosPagoDestinoToAttach.getClass(), pagodestinosPagoDestinoToAttach.getId());
-                attachedPagodestinos.add(pagodestinosPagoDestinoToAttach);
+            if(findPagosTFech(pagoTotal.getFecha()) != null ){
+                List<PagoTotal> pagosTotales = findPagosTFech(pagoTotal.getFecha());                
+                pagoTotal.setContador(pagosTotales.size());
+                em.getTransaction().begin();
+                // Persistir el objeto PagoTotal, lo cual debería automáticamente persistir sus PagoDestino
+                em.persist(pagoTotal);
+                em.getTransaction().commit();
+            }else{
+                em.getTransaction().begin();
+                em.persist(pagoTotal);
+                em.getTransaction().commit();
             }
-            pagoTotal.setPagodestinos(attachedPagodestinos);
-            em.persist(pagoTotal);
-            for (PagoDestino pagodestinosPagoDestino : pagoTotal.getPagodestinos()) {
-                PagoTotal oldPagototalOfPagodestinosPagoDestino = pagodestinosPagoDestino.getPagototal();
-                pagodestinosPagoDestino.setPagototal(pagoTotal);
-                pagodestinosPagoDestino = em.merge(pagodestinosPagoDestino);
-                if (oldPagototalOfPagodestinosPagoDestino != null) {
-                    oldPagototalOfPagodestinosPagoDestino.getPagodestinos().remove(pagodestinosPagoDestino);
-                    oldPagototalOfPagodestinosPagoDestino = em.merge(oldPagototalOfPagodestinosPagoDestino);
-                }
+            
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
             }
-            em.getTransaction().commit();
+            throw e;
         } finally {
-            if (em != null) {
-                em.close();
-            }
+            em.close();
         }
     }
 
@@ -156,26 +154,35 @@ public class PagoTotalJpaController implements Serializable {
     private List<PagoTotal> findPagoTotalEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            CriteriaQuery<PagoTotal> cq = em.getCriteriaBuilder().createQuery(PagoTotal.class);
             cq.select(cq.from(PagoTotal.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
                 q.setFirstResult(firstResult);
             }
-            return q.getResultList();
+            List<PagoTotal> resultList = q.getResultList();
+
+            // Inicializa las colecciones para evitar LazyInitializationException
+            for (PagoTotal pagoTotal : resultList) {
+                // Accede a la colección para inicializarla
+                pagoTotal.getPagodestinos().size();
+            }
+
+            return resultList;
         } finally {
             em.close();
         }
     }
 
+
     public PagoTotal findPagoTotal(int id) {
         EntityManager em = getEntityManager();
-        try {
-            return em.find(PagoTotal.class, id);
-        } finally {
-            em.close();
-        }
+
+        String jpql = "SELECT p FROM PagoTotal p JOIN FETCH p.pagodestinos WHERE p.id = :id";
+        return em.createQuery(jpql, PagoTotal.class)
+                            .setParameter("id", id)
+                            .getSingleResult();
     }
 
     public int getPagoTotalCount() {
@@ -190,5 +197,50 @@ public class PagoTotalJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<PagoTotal> findPagosTFech(int fecha) {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            // Consulta JPQL para obtener una lista de PagoTotal basada en la fecha
+            Query query = em.createQuery("SELECT p FROM PagoTotal p WHERE p.fecha = :fecha");
+            query.setParameter("fecha", fecha); // Establece el valor del parámetro "fecha"
+
+            // Devuelve la lista de resultados
+            return query.getResultList();
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public ComboBoxModel<String> fechaComboBoxModel() {
+        List<PagoTotal> pagosTotales = findPagoTotalEntities();
+        List<String> fechasString = new ArrayList<>();
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
+        for (PagoTotal pagoTotal : pagosTotales) {
+            int fecha = pagoTotal.getFecha(); // Suponiendo que `getFecha` devuelve un int en formato yyyyMMdd
+            int contador = pagoTotal.getContador(); // Obtener el contador
+
+            // Convertimos el int a String manteniendo el formato yyyyMMdd
+            String fechaString = String.format("%08d", fecha);
+            // Convertimos el String a LocalDate
+            LocalDate localDate = LocalDate.parse(fechaString, inputFormatter);
+            // Convertimos el LocalDate a String en el formato deseado
+            String fechaFormateada = localDate.format(outputFormatter);
+            // Formateamos la cadena final
+            String textoComboBox = String.format("%s (%d)", fechaFormateada, contador);
+            fechasString.add(textoComboBox);
+        }
+
+        // Convertimos la lista de String a DefaultComboBoxModel
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(fechasString.toArray(new String[0]));
+        return model;
+    }
+
 }

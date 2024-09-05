@@ -1,29 +1,30 @@
 package model;
-import java.io.Serializable;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "Pago")
 public class Pago implements Serializable {
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "empleado_id", nullable = false)  // Clave foránea que conecta a Empleado
-    private Empleado empleado;
+    @JoinColumn(name = "pagodestino_id")
+    private PagoDestino pagodestino;
 
     @ManyToOne
-    @JoinColumn(name = "pago_destino_id")  // Relación muchos a uno con PagoDestino
-    private PagoDestino pagoDestino;
+    @JoinColumn(name = "empleado_id", nullable = false)
+    private Empleado empleado;
 
     @Basic
     private int diast;
@@ -69,13 +70,14 @@ public class Pago implements Serializable {
         this.empleado = empleado;
     }
 
-    public PagoDestino getPagoDestino() {
-        return pagoDestino;
+    public PagoDestino getPagodestino() {
+        return pagodestino;
     }
 
-    public void setPagoDestino(PagoDestino pagoDestino) {
-        this.pagoDestino = pagoDestino;
+    public void setPagoDestino(PagoDestino pagodestino) {
+        this.pagodestino = pagodestino;
     }
+    
 
     public int getDiast() {
         return diast;
@@ -159,7 +161,7 @@ public class Pago implements Serializable {
 
     @Override
     public String toString() {
-        return "Pago{" + "id=" + id + ", empleado=" + empleado + ", pagoDestino=" + pagoDestino + ", diast=" + diast + ", diasd=" + diasd + ", bong=" + bong + ", bonp=" + bonp + ", ret=" + ret + ", mediosd=" + mediosd + ", modValue=" + modValue + ", pagtot=" + pagtot + ", fech=" + fech + ", contador=" + contador + '}';
+        return "Pago{id=" + id + ", empleado=" + empleado.getNombre() + ", cantidad=" + pagtot + "}";
     }
-    
+
 }

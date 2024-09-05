@@ -64,7 +64,7 @@ public class VistasController {
     }
     
     public void vistaPagos(List<Pago> pagos, List<PagoDestino> pagosDestinos, PagoTotal pagoTotal){
-        PagosView view = new PagosView(pagos, pagosDestinos, pagoTotal, pagoJpaController); // Uso de pagoJpaController inicializado
+        PagosView view = new PagosView(pagoTotal, pagoJpaController); // Uso de pagoJpaController inicializado
         view.setVisible(true); // Añadir visibilidad
         view.setLocationRelativeTo(null); // Añadir localización
     }
