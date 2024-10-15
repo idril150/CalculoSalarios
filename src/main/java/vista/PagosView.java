@@ -245,8 +245,9 @@ public class PagosView extends JFrame {
 
     // Método para calcular el pago total
     private double calcularPagoTotal(Pago pago) {
-        double salarioDiario = pago.getEmpleado().getSalario() / 30;
-        return salarioDiario * (pago.getDiast() + pago.getDiasd() + 0.5 * pago.getMediosd()) + pago.getBonp() + pago.getBong() - pago.getRet() + pago.getModValue();
+        double salarioDiario = pago.getEmpleado().getSalario() / 15;
+        double salario = (pago.getDiast()*salarioDiario)+(pago.getDiasd()*salarioDiario)-(pago.getMediosd()*(salarioDiario/2))+pago.getBong()+pago.getBonp()+pago.getModValue()-pago.getRet();
+        return salario;
     }
 
     private void actualizarTotales() {

@@ -105,6 +105,7 @@ public class ChecadorJpaController {
                 uniqueDates.add(date / 1000000L);
             }
             //System.out.println(uniqueDates);
+            System.out.println(uniqueDates);
             return uniqueDates.size();
         } catch (Exception ex) {
             throw ex;

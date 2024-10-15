@@ -10,9 +10,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import model.Empleado;
 import model.Pago;
+import model.PagoDestino;
+import model.PagoTotal;
 
 /**
  *
@@ -40,6 +45,7 @@ public class BonosView extends javax.swing.JFrame {
             }
         });
     }
+    CalculoController cctrl = new  CalculoController();     
     
     
 
@@ -239,9 +245,9 @@ public class BonosView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBAceptar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBAceptar1ActionPerformed
-        CalculoController cctrl = new  CalculoController();
-        double bonTuzoo[] = new double[4];
+           
         if(jCTuzoo.isSelected()){
+            double bonTuzoo[] = new double[4];
            // Crear los campos de entrada para los bonos
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
@@ -269,9 +275,13 @@ public class BonosView extends javax.swing.JFrame {
                 bonTuzoo[2] = Double.parseDouble(BTCField.getText());
                 bonTuzoo[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 4).collect(Collectors.toList()), bonTuzoo);
+            
         }
-        double bonZoomat[] = new double[4];
+        
         if(jCZoomat.isSelected()){
+            double bonZoomat[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -298,9 +308,13 @@ public class BonosView extends javax.swing.JFrame {
                 bonZoomat[2] = Double.parseDouble(BTCField.getText());
                 bonZoomat[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 1).collect(Collectors.toList()), bonZoomat);
+            
         }
-        double bonTamux[] = new double[4];
+        
         if(jCTamux.isSelected()){
+            double bonTamux[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -327,9 +341,13 @@ public class BonosView extends javax.swing.JFrame {
                 bonTamux[2] = Double.parseDouble(BTCField.getText());
                 bonTamux[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 5).collect(Collectors.toList()), bonTamux);
+            
         }
-        double bonN[] = new double[4];
+        
         if(jCNinez.isSelected()){
+            double bonN[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -356,9 +374,13 @@ public class BonosView extends javax.swing.JFrame {
                 bonN[2] = Double.parseDouble(BTCField.getText());
                 bonN[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 8).collect(Collectors.toList()), bonN);
+            
         }
-        double bonTama[] = new double[4];
+        
         if(jCTamatan.isSelected()){
+            double bonTama[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -385,9 +407,13 @@ public class BonosView extends javax.swing.JFrame {
                 bonTama[2] = Double.parseDouble(BTCField.getText());
                 bonTama[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 2).collect(Collectors.toList()), bonTama);
+            
         }
-        double bonY[] = new double[4];
+        
         if(jCYumka.isSelected()){
+            double bonY[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -407,16 +433,20 @@ public class BonosView extends javax.swing.JFrame {
 
             // Mostrar el panel dentro de un JOptionPane
             int result = JOptionPane.showConfirmDialog(null, myPanel, 
-                     "Ingresar Bonos para Tamatan", JOptionPane.OK_CANCEL_OPTION);
+                     "Ingresar Bonos para Yumka", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 bonY[0] = Double.parseDouble(BCField.getText());
                 bonY[1] = Double.parseDouble(BLField.getText());
                 bonY[2] = Double.parseDouble(BTCField.getText());
                 bonY[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 10).collect(Collectors.toList()), bonY);
+            
         }
-        double bonTla[] = new double[4];
+        
         if(jCTlaco.isSelected()){
+            double bonTla[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -443,9 +473,13 @@ public class BonosView extends javax.swing.JFrame {
                 bonTla[2] = Double.parseDouble(BTCField.getText());
                 bonTla[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 6).collect(Collectors.toList()), bonTla);
+            
         }
-        double bonV[] = new double[4];
+        
         if(jCValle.isSelected()){
+            double bonV[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -465,16 +499,20 @@ public class BonosView extends javax.swing.JFrame {
 
             // Mostrar el panel dentro de un JOptionPane
             int result = JOptionPane.showConfirmDialog(null, myPanel, 
-                     "Ingresar Bonos para Tlaco", JOptionPane.OK_CANCEL_OPTION);
+                     "Ingresar Bonos para Valle", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 bonV[0] = Double.parseDouble(BCField.getText());
                 bonV[1] = Double.parseDouble(BLField.getText());
                 bonV[2] = Double.parseDouble(BTCField.getText());
                 bonV[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 9).collect(Collectors.toList()), bonV);
+            
         }
-        double bonD[] = new double[4];
+        
         if(jCDiosP.isSelected()){
+            double bonD[] = new double[4];
             javax.swing.JTextField BCField = new javax.swing.JTextField(5);
             javax.swing.JTextField BLField = new javax.swing.JTextField(5);
             javax.swing.JTextField BTCField = new javax.swing.JTextField(5);
@@ -494,15 +532,40 @@ public class BonosView extends javax.swing.JFrame {
 
             // Mostrar el panel dentro de un JOptionPane
             int result = JOptionPane.showConfirmDialog(null, myPanel, 
-                     "Ingresar Bonos para Tlaco", JOptionPane.OK_CANCEL_OPTION);
+                     "Ingresar Bonos para Dios Padre", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 bonD[0] = Double.parseDouble(BCField.getText());
                 bonD[1] = Double.parseDouble(BLField.getText());
                 bonD[2] = Double.parseDouble(BTCField.getText());
                 bonD[3] = Double.parseDouble(BFSField.getText());
             }
+            
+            cctrl.agregarBonos(pagos.stream().filter(emp -> emp.getEmpleado().getDestino().getId() == 7).collect(Collectors.toList()), bonD);
+            
         }
-        cctrl.agregarBonos(pagos, bonTuzoo, bonZoomat, bonTamux, bonN, bonTama, bonY, bonTla, bonV, bonD);
+        JOptionPane pane = new JOptionPane("Generando Tablas, por favor espere...", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        final JDialog dialog = pane.createDialog("Cargando");
+        dialog.setModal(false); // Permitir que el hilo principal continúe trabajando mientras se muestra el mensaje
+
+        // Iniciar un hilo para mostrar el diálogo
+        Thread loadingThread = new Thread(() -> dialog.setVisible(true));
+        loadingThread.start();
+
+        // Iniciar otro hilo para la inicialización de la vista
+        new Thread(() -> {
+            try {
+        VistasController vctrl = new VistasController();
+        List<PagoDestino> pagosDestinos = cctrl.pagosTotales(pagos);
+        PagoTotal pagoTotal = cctrl.pagoTotalSuma(pagosDestinos);
+        vctrl.vistaPagos(pagos, pagosDestinos, pagoTotal);
+        SwingUtilities.invokeLater(dialog::dispose);
+                
+                // Dispose de la ventana actual si es necesario
+                // dispose(); // Descomentar si necesitas cerrar la ventana actual
+            } catch (Exception e) {
+                e.printStackTrace(); // Manejo de excepciones
+            }
+        }).start();
         dispose();
     }//GEN-LAST:event_jBAceptar1ActionPerformed
 

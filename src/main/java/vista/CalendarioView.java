@@ -11,8 +11,10 @@ import controller.CalculoController;
 import controller.VistasController;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import model.Empleado;
 import java.util.List;
+import model.Pago;
 
 public class CalendarioView extends JFrame {
     
@@ -75,12 +77,46 @@ public class CalendarioView extends JFrame {
                         if (fechaInicioInt < fechaFinInt){
                             //System.out.println("Fecha de Inicio: " + dateFormat.format(fechaInicio));
                             //System.out.println("Fecha de Fin: " + dateFormat.format(fechaFin));
-                            CalculoController calctrl = new CalculoController();
-                            VistasController vctrl = new VistasController();
-                            //System.out.println(empctrl.findEmpleados());
-                            var pagos = calctrl.calculasSalario(empleados, fechaInicioInt, fechaFinInt);
-                            vctrl.vistaBonos(pagos,empleados);
-                            System.out.println(fechaFinStr);
+                            JOptionPane pane = new JOptionPane("Obteniendo datos...", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+                            final JDialog dialog = pane.createDialog("Cargando");
+                            dialog.setModal(false); 
+                            Thread loadingThread = new Thread(() -> dialog.setVisible(true));
+                            loadingThread.start();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(500);
+                                        
+                                        VistasController vctrl = new VistasController();
+                                        List<Empleado> primeraMitad = empleados.subList(0, empleados.size()/2);
+                                        List<Empleado> segundaMitad = empleados.subList(empleados.size()/2, empleados.size());
+                                        CalculoController cal1 = new CalculoController(primeraMitad, fechaInicioInt, fechaFinInt);
+                                        CalculoController cal2 = new CalculoController(segundaMitad, fechaInicioInt, fechaFinInt);
+                                        Thread hilo1 = new Thread(cal1);
+                                        Thread hilo2 = new Thread(cal2);
+                                        hilo1.start();
+                                        hilo2.start();
+                                        try {
+                                            hilo1.join();
+                                            hilo2.join();
+                                        } catch(InterruptedException ex){
+                                            ex.printStackTrace();
+                                        }
+                                        List<Pago> pagos = new ArrayList<>();
+                                        pagos.addAll(cal1.getPagos());
+                                        pagos.addAll(cal2.getPagos());
+                                        //System.out.println(empctrl.findEmpleados());
+                                        //var pagos = calctrl.calculasSalario(empleados, fechaInicioInt, fechaFinInt);
+                                        vctrl.vistaBonos(pagos,empleados);
+                                    }catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        // Cerrar el diálogo después de abrir la vista
+                                        SwingUtilities.invokeLater(dialog::dispose);
+                                    }   }
+                            }).start();                                
+                            //System.out.println(fechaFinStr);
                             dispose();                          
                         }else{
                             JOptionPane.showMessageDialog(null, "la fecha de inicio no puede ser posterior a la fecha final");
